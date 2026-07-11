@@ -772,7 +772,7 @@ export default function Dashboard() {
               <DialogTitle className="heading-display text-xl">Nuevo turno</DialogTitle>
             </DialogHeader>
             <div className="space-y-5 mt-2">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="font-body text-sm">Fecha</Label>
                   <Input

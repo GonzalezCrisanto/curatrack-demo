@@ -97,7 +97,7 @@ export function TurnoActionsDialog({ turno, patientName, open, onOpenChange }: T
 
           {isEditable ? (
             <>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="font-body text-sm">Fecha</Label>
                   <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />

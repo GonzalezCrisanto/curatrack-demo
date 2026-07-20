@@ -784,36 +784,13 @@ export default function Dashboard() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="font-body text-sm">Hora</Label>
-                  <div className="flex gap-1 items-center">
-                    <input
-                      type="number"
-                      min={0}
-                      max={23}
-                      placeholder="hh"
-                      value={turnoTime ? parseInt(turnoTime.split(':')[0], 10) : ''}
-                      onChange={e => {
-                        const mins = turnoTime ? (turnoTime.split(':')[1] ?? '00') : '00';
-                        if (e.target.value === '') { setTurnoTime(''); return; }
-                        const h = Math.min(23, Math.max(0, parseInt(e.target.value, 10)));
-                        setTurnoTime(`${String(h).padStart(2, '0')}:${mins}`);
-                      }}
-                      className="font-body h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    />
-                    <span className="text-muted-foreground font-body">:</span>
-                    <select
-                      value={turnoTime ? (turnoTime.split(':')[1] ?? '00') : ''}
-                      onChange={e => {
-                        const hrs = turnoTime ? (turnoTime.split(':')[0] ?? '00') : '00';
-                        setTurnoTime(e.target.value ? `${hrs}:${e.target.value}` : '');
-                      }}
-                      className="font-body h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    >
-                      <option value="">mm</option>
-                      {['00', '15', '30', '45'].map(m => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <Input
+                    type="time"
+                    step={900}
+                    value={turnoTime}
+                    onChange={e => setTurnoTime(e.target.value)}
+                    className="font-body"
+                  />
                 </div>
               </div>
 

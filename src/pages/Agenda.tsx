@@ -151,25 +151,29 @@ export default function Agenda() {
                     >
                       <button
                         onClick={() => navigate(it.caseId ? `/patients/${it.patient.id}/cases/${it.caseId}` : `/patients/${it.patient.id}`)}
-                        className="flex-1 min-w-0 flex items-center gap-3 p-3 text-left"
+                        className="flex-1 min-w-0 flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-2 p-3 text-left"
                       >
                         <div className="h-9 w-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
                           <Clock className="h-4 w-4 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 font-body text-base">
-                            <User className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="font-medium">{it.patient.lastName}, {it.patient.firstName}</span>
-                            {it.time && <span className="text-muted-foreground">· {it.time}</span>}
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-body text-base">
+                            <span className="inline-flex items-center gap-1 font-medium min-w-0">
+                              <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                              <span className="truncate">{it.patient.lastName}, {it.patient.firstName}</span>
+                            </span>
+                            {it.time && <span className="text-muted-foreground shrink-0">· {it.time}</span>}
                           </div>
                           <div className="font-body text-sm text-muted-foreground truncate">
                             {it.activeWoundCount} herida{it.activeWoundCount !== 1 ? 's' : ''} activa{it.activeWoundCount !== 1 ? 's' : ''}
                           </div>
                         </div>
-                        <Badge variant="outline" className={`font-body text-[12px] uppercase shrink-0 ${turnoStatusChipClasses(it.status)}`}>
-                          {turnoStatusLabel(it.status)}
-                        </Badge>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        <div className="flex items-center gap-2 shrink-0 ml-[3rem] sm:ml-0">
+                          <Badge variant="outline" className={`font-body text-[12px] uppercase shrink-0 ${turnoStatusChipClasses(it.status)}`}>
+                            {turnoStatusLabel(it.status)}
+                          </Badge>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        </div>
                       </button>
                       <Button
                         variant="ghost"

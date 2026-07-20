@@ -68,22 +68,36 @@ export function deriveTurnoStatus(
 export type SupersedeCandidate = {
   id: string;
   patientId: string;
+  caseId?: string | null;
   status: TurnoStatus;
 };
 
 /**
  * Given the current app-shape turnos (already carrying their derived status)
- * and a patient_id, returns the ids of turnos for that patient that are still
- * unresolved (`programado` or `vencido`) and should be superseded/cancelled
- * before a new turno is created for that patient. `completado`/`cancelado`
+ * and the patient/case a new turno is being created for, returns the ids of
+ * turnos that are still unresolved (`programado` or `vencido`) and should be
+ * superseded/cancelled before the new turno is created. `completado`/`cancelado`
  * turnos are final/historical and are left untouched.
+ *
+ * Superseding is scoped to the same case: closing an evolution for a case
+ * with a "próximo control" must replace that case's own pending turno (so it
+ * doesn't accumulate duplicates across repeated evolution closes), but must
+ * NOT cancel turnos belonging to the patient's other cases. When the new
+ * turno has no case (manual "agregar turno" flows), nothing is superseded —
+ * a patient can have several independent active turnos at once.
  */
 export function findTurnosToSupersede(
   existingTurnos: SupersedeCandidate[],
   patientId: string,
+  caseId?: string | null,
 ): string[] {
+  if (!caseId) return [];
   return existingTurnos
-    .filter(t => t.patientId === patientId && (t.status === 'programado' || t.status === 'vencido'))
+    .filter(t =>
+      t.patientId === patientId &&
+      t.caseId === caseId &&
+      (t.status === 'programado' || t.status === 'vencido'),
+    )
     .map(t => t.id);
 }
 

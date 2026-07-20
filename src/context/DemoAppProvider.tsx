@@ -388,7 +388,7 @@ export function DemoAppProvider({ children }: { children: React.ReactNode }) {
   const createTurno = useCallback(async (input: {
     caseId?: string; patientId: string; date: string; time?: string; notes?: string;
   }): Promise<string | null> => {
-    const idsToSupersede = findTurnosToSupersede(turnos, input.patientId);
+    const idsToSupersede = findTurnosToSupersede(turnos, input.patientId, input.caseId);
     if (idsToSupersede.length > 0) {
       setTurnoRows((prev) => prev.map((t) => (idsToSupersede.includes(t.id) ? { ...t, status: 'cancelado' as const } : t)));
     }

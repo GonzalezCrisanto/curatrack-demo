@@ -701,10 +701,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!authUser) return null;
 
     // Supersede any still-unresolved (programado/vencido) turno already
-    // scheduled for this patient before creating a new one, so a patient
+    // scheduled for this same case before creating a new one, so a case
     // never accumulates duplicate/stale active turnos across multiple
-    // evolution closes. completado/cancelado turnos are final and left untouched.
-    const idsToSupersede = findTurnosToSupersede(turnos, input.patientId);
+    // evolution closes. completado/cancelado turnos are final and left
+    // untouched, and turnos from the patient's other cases (or manual
+    // turnos with no case) are never superseded.
+    const idsToSupersede = findTurnosToSupersede(turnos, input.patientId, input.caseId);
     for (const id of idsToSupersede) {
       try {
         await cancelTurno(id);

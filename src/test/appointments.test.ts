@@ -93,52 +93,69 @@ describe('deriveTurnoStatus', () => {
 });
 
 describe('findTurnosToSupersede', () => {
-  it('returns the id of an existing programado turno for the same patient', () => {
+  const CASE_ID = 'case-1';
+
+  it('returns the id of an existing programado turno for the same patient and case', () => {
     const existing = [
-      { id: 't1', patientId: PATIENT_ID, status: 'programado' as const },
+      { id: 't1', patientId: PATIENT_ID, caseId: CASE_ID, status: 'programado' as const },
     ];
-    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual(['t1']);
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual(['t1']);
   });
 
-  it('returns the id of an existing vencido turno for the same patient', () => {
+  it('returns the id of an existing vencido turno for the same patient and case', () => {
     const existing = [
-      { id: 't1', patientId: PATIENT_ID, status: 'vencido' as const },
+      { id: 't1', patientId: PATIENT_ID, caseId: CASE_ID, status: 'vencido' as const },
     ];
-    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual(['t1']);
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual(['t1']);
   });
 
   it('leaves completado turnos untouched', () => {
     const existing = [
-      { id: 't1', patientId: PATIENT_ID, status: 'completado' as const },
+      { id: 't1', patientId: PATIENT_ID, caseId: CASE_ID, status: 'completado' as const },
     ];
-    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual([]);
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual([]);
   });
 
   it('leaves cancelado turnos untouched', () => {
     const existing = [
-      { id: 't1', patientId: PATIENT_ID, status: 'cancelado' as const },
+      { id: 't1', patientId: PATIENT_ID, caseId: CASE_ID, status: 'cancelado' as const },
     ];
-    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual([]);
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual([]);
   });
 
   it('ignores turnos belonging to other patients', () => {
     const existing = [
-      { id: 't1', patientId: 'patient-other', status: 'programado' as const },
+      { id: 't1', patientId: 'patient-other', caseId: CASE_ID, status: 'programado' as const },
     ];
-    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual([]);
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual([]);
   });
 
   it('returns an empty array when there are no existing turnos', () => {
-    expect(findTurnosToSupersede([], PATIENT_ID)).toEqual([]);
+    expect(findTurnosToSupersede([], PATIENT_ID, CASE_ID)).toEqual([]);
   });
 
-  it('returns multiple ids when several unresolved turnos exist for the same patient', () => {
+  it('returns multiple ids when several unresolved turnos exist for the same patient and case', () => {
     const existing = [
-      { id: 't1', patientId: PATIENT_ID, status: 'programado' as const },
-      { id: 't2', patientId: PATIENT_ID, status: 'vencido' as const },
-      { id: 't3', patientId: PATIENT_ID, status: 'completado' as const },
-      { id: 't4', patientId: 'patient-other', status: 'programado' as const },
+      { id: 't1', patientId: PATIENT_ID, caseId: CASE_ID, status: 'programado' as const },
+      { id: 't2', patientId: PATIENT_ID, caseId: CASE_ID, status: 'vencido' as const },
+      { id: 't3', patientId: PATIENT_ID, caseId: CASE_ID, status: 'completado' as const },
+      { id: 't4', patientId: 'patient-other', caseId: CASE_ID, status: 'programado' as const },
     ];
-    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual(['t1', 't2']);
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual(['t1', 't2']);
+  });
+
+  it('does NOT supersede a turno from a different case of the same patient', () => {
+    const existing = [
+      { id: 't1', patientId: PATIENT_ID, caseId: 'case-other', status: 'programado' as const },
+    ];
+    expect(findTurnosToSupersede(existing, PATIENT_ID, CASE_ID)).toEqual([]);
+  });
+
+  it('supersedes nothing when the new turno has no case (manual scheduling)', () => {
+    const existing = [
+      { id: 't1', patientId: PATIENT_ID, caseId: CASE_ID, status: 'programado' as const },
+      { id: 't2', patientId: PATIENT_ID, caseId: null, status: 'programado' as const },
+    ];
+    expect(findTurnosToSupersede(existing, PATIENT_ID)).toEqual([]);
   });
 });

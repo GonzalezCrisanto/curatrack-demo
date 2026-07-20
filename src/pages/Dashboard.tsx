@@ -878,6 +878,7 @@ export default function Dashboard() {
                 className="font-body"
                 disabled={
                   !turnoDate ||
+                  !turnoTime ||
                   !turnoSelectedPatient ||
                   !patients.find(p => p.id === turnoSelectedPatient?.id)?.cases.length
                 }

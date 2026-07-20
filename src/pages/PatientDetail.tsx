@@ -192,7 +192,7 @@ export default function PatientDetail() {
   const sharedCount = 0;
 
   const handleSaveAppointment = async () => {
-    if (!apptDate) return;
+    if (!apptDate || !apptTime) return;
     await createTurno({ patientId: patient.id, date: apptDate, time: apptTime, notes: apptNotes.trim() || undefined });
     setApptDialogOpen(false);
     setApptNotes('');
@@ -601,7 +601,7 @@ export default function PatientDetail() {
               <Button variant="outline" onClick={() => setApptDialogOpen(false)} className="font-body">Cancelar</Button>
               <Button
                 onClick={handleSaveAppointment}
-                disabled={!apptDate || apptTakenTimes.has(apptTime)}
+                disabled={!apptDate || !apptTime || apptTakenTimes.has(apptTime)}
                 className="font-body"
               >
                 Guardar turno
